@@ -30,9 +30,9 @@
  */
 
 import './towns.html';
-import loadAndSortTowns from 'functions.js';
+import { loadAndSortTowns } from './functions.js';
 
-// const homeworkContainer = document.querySelector('#app');
+const homeworkContainer = document.querySelector('#app');
 
 /*
  Функция должна вернуть Promise, который должен быть разрешен с массивом городов в качестве значения
@@ -56,26 +56,63 @@ function loadTowns() {
    isMatching('Moscow', 'Moscov') // false
  */
 function isMatching(full, chunk) {
-  const toCheck = full.String.toLowerCase();
-  const consid = chunk.String.toLowerCase();
+  const toCheck = full.toLowerCase();
+  const consid = chunk.toLowerCase();
   return toCheck.includes(consid);
 }
 
 /* Блок с надписью "Загрузка" */
-// const loadingBlock = homeworkContainer.querySelector('#loading-block');
-// /* Блок с надписью "Не удалось загрузить города" и кнопкой "Повторить" */
-// const loadingFailedBlock = homeworkContainer.querySelector('#loading-failed');
-// /* Кнопка "Повторить" */
-// const retryButton = homeworkContainer.querySelector('#retry-button');
-// /* Блок с текстовым полем и результатом поиска */
-// const filterBlock = homeworkContainer.querySelector('#filter-block');
-// /* Текстовое поле для поиска по городам */
-// const filterInput = homeworkContainer.querySelector('#filter-input');
-// /* Блок с результатами поиска */
-// const filterResult = homeworkContainer.querySelector('#filter-result');
+const loadingBlock = homeworkContainer.querySelector('#loading-block');
+/* Блок с надписью "Не удалось загрузить города" и кнопкой "Повторить" */
+const loadingFailedBlock = homeworkContainer.querySelector('#loading-failed');
+/* Кнопка "Повторить" */
+const retryButton = homeworkContainer.querySelector('#retry-button');
+/* Блок с текстовым полем и результатом поиска */
+const filterBlock = homeworkContainer.querySelector('#filter-block');
+/* Текстовое поле для поиска по городам */
+const filterInput = homeworkContainer.querySelector('#filter-input');
+/* Блок с результатами поиска */
+const filterResult = homeworkContainer.querySelector('#filter-result');
 
-// retryButton.addEventListener('click', () => {});
+const towns = [];
 
-// filterInput.addEventListener('input', function () {});
+retryButton.addEventListener('click', () => {
+  tryToLoad();
+});
+
+filterInput.addEventListener('input', function () {
+  updateFilter(this.value);
+});
+
+loadingFailedBlock.classList.add('hidden');
+filterBlock.classList.add('hidden');
+
+async function tryToLoad() {
+  try {
+    this.towns = await loadTowns();
+    loadingBlock.classList.add('hidden');
+    loadingFailedBlock.classList.add('hidden');
+    filterBlock.classList.remove('hidden');
+  } catch (e) {
+    loadingBlock.classList.add('hidden');
+    loadingFailedBlock.classList.remove('hidden');
+  }
+}
+
+function updateFilter(filterValue) {
+  filterResult.innerHTML = '';
+
+  const fragment = document.createDocumentFragment();
+
+  for (const town of towns) {
+    if (filterValue && isMatching(town.name, filterValue)) {
+      const townDiv = document.createElement('div');
+      fragment.append(townDiv);
+    }
+  }
+  filterResult.append(fragment);
+}
+
+tryToLoad();
 
 export { loadTowns, isMatching };

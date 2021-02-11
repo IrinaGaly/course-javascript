@@ -12,7 +12,7 @@
  */
 function createDivWithText(text) {
   const myEl = document.createElement('div');
-  myEl.innerHTML = text;
+  myEl.textContent = text;
   return myEl;
 }
 
@@ -50,7 +50,6 @@ function prepend(what, where) {
 function findAllPSiblings(where) {
   const result = [];
   for (const elem of where.children) {
-    console.log(elem.nextElementSibling);
     if (elem.nextElementSibling && elem.nextElementSibling.tagName === 'P') {
       result.push(elem);
     }
@@ -78,7 +77,7 @@ function findAllPSiblings(where) {
 function findError(where) {
   const result = [];
 
-  for (const child of where.childNodes) {
+  for (const child of where.children) {
     result.push(child.textContent);
   }
 
@@ -125,7 +124,7 @@ function deleteTextNodesRecursive(where) {
     if (e.nodeType === Element.TEXT_NODE) {
       where.removeChild(e);
       i--;
-    } else {
+    } else if (e.nodeType === Element.ELEMENT_NODE) {
       deleteTextNodesRecursive(e);
     }
   }
@@ -159,8 +158,8 @@ function collectDOMStat(root) {
   };
 
   function recordsRootsInfo(root) {
-    for (const child in root.childNodes) {
-      if (child.nodeType === Node.TEXT_NODE.NODE) {
+    for (const child of root.childNodes) {
+      if (child.nodeType === Node.TEXT_NODE) {
         obj.texts++;
       } else if (child.nodeType === Node.ELEMENT_NODE) {
         if (child.tagName in obj.tags) {
@@ -172,7 +171,7 @@ function collectDOMStat(root) {
           if (className in obj.classes) {
             obj.classes[className]++;
           } else {
-            onrejectionhandled.classes[className] = 1;
+            obj.classes[className] = 1;
           }
         }
         recordsRootsInfo(child);
@@ -180,7 +179,6 @@ function collectDOMStat(root) {
     }
   }
   recordsRootsInfo(root);
-  console.log(obj);
   return obj;
 }
 
@@ -223,7 +221,7 @@ function observeChildNodes(where, fn) {
         fn({
           type: mutation.addedNodes.length ? 'insert' : 'remove',
           nodes: [
-            ...(mutation.addedNodes.length ? mutation.addedNodes : mutation.removeNodes),
+            ...(mutation.addedNodes.length ? mutation.addedNodes : mutation.removedNodes),
           ],
         });
       }
