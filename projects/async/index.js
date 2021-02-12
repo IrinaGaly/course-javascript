@@ -41,7 +41,7 @@ const homeworkContainer = document.querySelector('#app');
  https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json
  */
 function loadTowns() {
-  loadAndSortTowns();
+  return loadAndSortTowns();
 }
 
 /*
@@ -74,7 +74,7 @@ const filterInput = homeworkContainer.querySelector('#filter-input');
 /* Блок с результатами поиска */
 const filterResult = homeworkContainer.querySelector('#filter-result');
 
-const towns = [];
+let towns = [];
 
 retryButton.addEventListener('click', () => {
   tryToLoad();
@@ -89,7 +89,7 @@ filterBlock.classList.add('hidden');
 
 async function tryToLoad() {
   try {
-    this.towns = await loadTowns();
+    towns = await loadTowns();
     loadingBlock.classList.add('hidden');
     loadingFailedBlock.classList.add('hidden');
     filterBlock.classList.remove('hidden');
@@ -107,6 +107,7 @@ function updateFilter(filterValue) {
   for (const town of towns) {
     if (filterValue && isMatching(town.name, filterValue)) {
       const townDiv = document.createElement('div');
+      townDiv.textContent = town.name;
       fragment.append(townDiv);
     }
   }
