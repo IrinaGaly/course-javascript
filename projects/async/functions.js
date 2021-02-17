@@ -29,13 +29,11 @@ function delayPromise(seconds) {
  */
 
 function loadAndSortTowns() {
-  return fetch(
-    'https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json'
-  ).then((response) => {
-    return response
-      .json()
-      .then((result) => result.sort((i, k) => i.name.localeCompare(k.name)));
-  });
+  return fetch('https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json')
+    .then((response) => {
+      return response.json();
+    })
+    .then((result) => result.sort((i, k) => i.name.localeCompare(k.name)));
 }
 
 export { delayPromise, loadAndSortTowns };

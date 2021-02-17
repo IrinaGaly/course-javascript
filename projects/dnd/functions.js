@@ -79,7 +79,7 @@ function delegate(target, fn) {
 function once(target, fn) {
   let indicator = true;
 
-  target.addEventListener('cleck', () => {
+  target.addEventListener('click', () => {
     if (indicator) {
       fn();
       indicator = false;
